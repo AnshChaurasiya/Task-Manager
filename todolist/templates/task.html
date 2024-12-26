@@ -1,108 +1,224 @@
 {% extends "base.html" %}
-
 {% block title %}
-<title> {{title}} </title>
+<title>{{ title }}</title>
 {% endblock title %}
 
-
-{% block content %}<br>
-<div class="container fluid">
-
+{% block content %}
+<div class="container-fluid py-5">
   {% if messages %}
-    {% for message in messages  %}
+    {% for message in messages %}
     <div class="alert alert-success" role="alert">
-      {{message }}      
+      {{ message }}
     </div>
     {% endfor %}
   {% endif %}
 
-  <form method="POST">
-    {% csrf_token %}
-    <div class="row">
-      <div class="col-sm-4">
+  <div class="mb-4">
+    <form method="POST" class="d-flex justify-content-center">
+      {% csrf_token %}
+      <div class="input-group w-50">
+        <input type="text" class="form-control rounded-pill" id="new_task" name="task" placeholder="Add a new task" required>
+        <button type="submit" class="btn btn-primary rounded-pill ms-2">
+          <i class="bi bi-plus-circle"></i> Add Task
+        </button>
       </div>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" id="new_task" name="task" placeholder="New task?">
-      </div>
-      <div class="col-sm-2">
-      <button type="submit" class="btn btn-primary">Add Task</button>
-      </div>
-    </div>
-  </form>
-<button type="button" class="btn btn-primary position-relative badge text-bg-danger">
-    Pending Task
-    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-      {{pending_task}}
-    </span>
-</button>
+    </form>
+  </div>
 
-<button type="button" class="btn btn-primary position-relative badge text-bg-success">
-    Completed Task
-    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-    {{completed_task}}
-    </span>
-</button>
+  <div class="d-flex justify-content-end mb-4">
+    <button class="btn btn-outline-secondary" id="theme-toggle">
+      <i class="bi bi-moon-stars" id="theme-icon"></i> 
+    </button>
+  </div>
 
-<hr>
-<br>
-<h4> Pending Tasks: </h4>
-{% comment %} display Pending Tasks here {% endcomment %}
-{% if pending_task %}
-<table class="table text-center">
-    <thead>
-      <tr  class="table-dark">
-        <th class="col-lg-5">Task Name</th>
-        <th class="col-lg-3">Status</th>
-        <th class="col-lg-2">Edit</th>
-        <th class="col-lg-2">Delete</th>
-      </tr>
-    </thead>
-    
-    <tbody>
-    {% for tasks in all_task %}
-      {% if not tasks.done %}
-      <tr class="table-light">
-        <td>{{tasks.task}}</td>
-        <td><a href="{% url 'complete_uncomplete_task' tasks.id %}"><button type="button" class="btn btn-info">Mark as Completed</button></a></td>
-        <td><a href="{% url 'edit_task' tasks.id %}"><button type="button" class="btn btn-success">Edit</button></a></td>
-        <td><a href="{% url 'delete_task' tasks.id %}"><button type="button" class="btn btn-danger">Delete</button></a></td>
-        
-      </tr>
+  <div class="d-flex justify-content-start mb-4">
+    <button type="button" class="btn btn-info rounded-pill me-3 task-count-btn">
+      Pending Tasks
+      <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle">
+        {{ pending_task }}
+      </span>
+    </button>
+    <button type="button" class="btn btn-success rounded-pill task-count-btn">
+      Completed Tasks
+      <span class="badge rounded-pill bg-success position-absolute top-0 start-100 translate-middle">
+        {{ completed_task }}
+      </span>
+    </button>
+  </div>
+
+  <hr>
+
+  <h4 class="text-muted">Pending Tasks</h4>
+  {% if pending_task %}
+  <div class="row">
+    {% for task in all_task %}
+      {% if not task.done %}
+      <div class="col-lg-6 col-md-12 mb-4">
+        <div class="card shadow-sm task-card border-0 rounded-lg hover-lift">
+          <div class="card-body">
+            <h5 class="card-title truncate">{{ task.task }}</h5>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="badge bg-warning text-dark">{{ task.priority }}</span>
+              <div class="btn-group">
+                <a href="{% url 'complete_uncomplete_task' task.id %}" class="btn btn-success btn-sm">
+                  <i class="bi bi-check-circle"></i> Complete
+                </a>
+                <a href="{% url 'edit_task' task.id %}" class="btn btn-info btn-sm">
+                  <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a href="{% url 'delete_task' task.id %}" class="btn btn-danger btn-sm">
+                  <i class="bi bi-trash"></i> Delete
+                </a>
+              </div>
+            </div>
+            <div class="mt-2">
+              {% if task.due_date %}
+                <small class="text-muted"><i class="bi bi-calendar-event"></i> Due: {{ task.due_date|date:"d M Y" }}</small>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
       {% endif %}
     {% endfor %}
-    </tbody>
-  </table>
-{% endif %}
+  </div>
+  {% endif %}
 
-<br>
-<h4> Completed Tasks: </h4>
-{% comment %} display completed task here {% endcomment %}
-{% if completed_task %}
-<table class="table text-center">
-    <thead>
-      <tr  class="table-dark">
-        <th class="col-lg-5">Task Name</th>
-        <th class="col-lg-3">Status</th>
-        <th class="col-lg-2">Edit</th>
-        <th class="col-lg-2">Delete</th>
-      </tr>
-    </thead>
-    
-    <tbody>
-    {% for tasks in all_task %}
-      {% if tasks.done %}
-      <tr  class="table-light">
-        <td>{{tasks.task}}</td>
-        <td><a href="{% url 'complete_uncomplete_task' tasks.id %}"><button type="button" class="btn btn-info">Mark as Pending</button></a></td>
-        <td><a href="{% url 'edit_task' tasks.id %}"><button type="button" class="btn btn-success">Edit</button></a></td>
-        <td><a href="{% url 'delete_task' tasks.id %}"><button type="button" class="btn btn-danger">Delete</button></a></td>
-      </tr>
-        {% endif %}
+  <hr>
+
+  <h4 class="text-muted">Completed Tasks</h4>
+  {% if completed_task %}
+  <div class="row">
+    {% for task in all_task %}
+      {% if task.done %}
+      <div class="col-lg-6 col-md-12 mb-4">
+        <div class="card shadow-sm task-card border-0 rounded-lg bg-light hover-lift">
+          <div class="card-body">
+            <h5 class="card-title text-decoration-line-through truncate">{{ task.task }}</h5>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="badge bg-success">{{ task.priority }}</span>
+              <div class="btn-group">
+                <a href="{% url 'complete_uncomplete_task' task.id %}" class="btn btn-warning btn-sm">
+                  <i class="bi bi-arrow-left-circle"></i> Mark as Pending
+                </a>
+                <a href="{% url 'edit_task' task.id %}" class="btn btn-info btn-sm">
+                  <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a href="{% url 'delete_task' task.id %}" class="btn btn-danger btn-sm">
+                  <i class="bi bi-trash"></i> Delete
+                </a>
+              </div>
+            </div>
+            <div class="mt-2">
+              {% if task.completed_date %}
+                <small class="text-muted"><i class="bi bi-calendar-check"></i> Completed: {{ task.completed_date|date:"d M Y" }}</small>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
     {% endfor %}
-    </tbody>
-  </table>
-{% endif %}
+  </div>
+  {% endif %}
 </div>
-{% endblock content %}
 
-</div>
+<script>
+  const savedTheme = localStorage.getItem('theme');
+  const body = document.body;
+
+  if (savedTheme) {
+    body.classList.add(savedTheme);
+    document.getElementById('theme-icon').classList.toggle('bi-moon-stars', savedTheme === 'dark-mode');
+    document.getElementById('theme-icon').classList.toggle('bi-sun', savedTheme !== 'dark-mode');
+  }
+
+  document.getElementById('theme-toggle').addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    
+    if (body.classList.contains('dark-mode')) {
+      localStorage.setItem('theme', 'dark-mode');
+      document.getElementById('theme-icon').classList.toggle('bi-sun', true);
+      document.getElementById('theme-icon').classList.toggle('bi-moon-stars', false);
+    } else {
+      localStorage.setItem('theme', 'light-mode');
+      document.getElementById('theme-icon').classList.toggle('bi-moon-stars', true);
+      document.getElementById('theme-icon').classList.toggle('bi-sun', false);
+    }
+  });
+</script>
+<style>
+  body.dark-mode {
+    background-color: #121212;
+    color: #e4e4e4;
+  }
+
+  body.dark-mode .card {
+    background-color: #333;
+    color: #e4e4e4;
+  }
+
+  body.dark-mode .btn {
+    background-color: #444;
+    color: #fff;
+  }
+
+  body.dark-mode .btn-outline-secondary {
+    border-color: #666;
+    color: #fff;
+  }
+
+  body.dark-mode .badge {
+    background-color: #ff6f61;
+  }
+  .task-count-btn {
+    position: relative;
+    padding: 10px 20px;
+    border-radius: 50px;
+    background-color: #007bff;
+    color: white;
+    font-weight: 500;
+  }
+
+  .task-count-btn:hover {
+    background-color: #0056b3;
+  }
+  .task-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease-in-out;
+  }
+  .btn:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s ease-in-out;
+  }
+  .btn-outline-secondary {
+    border-color: #666;
+    color: #fff;
+  }
+
+  .task-card {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    height: 150px; 
+    width: 100%; 
+    max-width: 400px; 
+  }
+
+  .truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .task-card:hover .truncate {
+    white-space: normal; 
+  }
+  body.dark-mode .text-muted {
+    color: #b0b0b0;  
+  }
+
+  .text-muted {
+    color: #6c757d;
+  }
+</style>
+
+{% endblock content %}
