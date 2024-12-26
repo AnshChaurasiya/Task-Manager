@@ -25,11 +25,9 @@
             <div class="text-white">{{ user.username }}</div>&nbsp;&nbsp;
                 <a href="{% url 'logout' %}"><button class="btn btn-outline-info" type="submit">Logout</button></a> 
             {% elif current_page == 'login' %}
-              <a href="https://www.linkedin.com/in/chanchalkmaurya/"><button class="btn btn-outline-success" type="submit">Know me</button></a>&nbsp;&nbsp;
 
                 <a href="{% url 'register' %}"><button class="btn btn-outline-secondary" type="submit">Register</button></a>
             {% else %}
-              <a href="https://www.linkedin.com/in/chanchalkmaurya/"><button class="btn btn-outline-success" type="submit">Know me</button></a>&nbsp;&nbsp;
 
                 <a href="{% url 'login' %}"><button class="btn btn-outline-secondary" type="submit">Login</button></a>
             {% endif %}

@@ -26,7 +26,6 @@ def tasklist(request):
     else:
         all_task = TaskList.objects.filter(owner=request.user)
         
-        ## pending and completed task
         pending_task = 0
         completed_task = 0
         for task in all_task:
