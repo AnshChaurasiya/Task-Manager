@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+
+{% block title %} <title> Login- TaskManager </title> {% endblock title %}
+
+{% block content %}
+    <div class="container">
+    <br>
+    {% if messages %}
+    {% for message in messages  %}
+    <div class="alert alert-success" role="alert">
+      {{message }}      
+    </div>
+    {% endfor %}
+  {% endif %}
+
+
+  <div class="container">
+    <br>
+    <h1> Login here </h1>
+    <form method="POST" class="mt-5">
+        {% csrf_token %}
+        {{ form.as_p}}
+        <button  class= "btn btn-secondary" type="submit">Login</button>
+    </form>
+    <br>
+    <p> New User ? <a href="{% url 'register' %}">Register here</a> </p>
+</div>
+  
+    </div>
+{% endblock content %}
+

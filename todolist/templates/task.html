@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title> {{title}} </title>
+{% endblock title %}
+
+
+{% block content %}<br>
+<div class="container fluid">
+
+  {% if messages %}
+    {% for message in messages  %}
+    <div class="alert alert-success" role="alert">
+      {{message }}      
+    </div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-sm-4">
+      </div>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="new_task" name="task" placeholder="New task?">
+      </div>
+      <div class="col-sm-2">
+      <button type="submit" class="btn btn-primary">Add Task</button>
+      </div>
+    </div>
+  </form>
+<button type="button" class="btn btn-primary position-relative badge text-bg-danger">
+    Pending Task
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+      {{pending_task}}
+    </span>
+</button>
+
+<button type="button" class="btn btn-primary position-relative badge text-bg-success">
+    Completed Task
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+    {{completed_task}}
+    </span>
+</button>
+
+<hr>
+<br>
+<h4> Pending Tasks: </h4>
+{% comment %} display Pending Tasks here {% endcomment %}
+{% if pending_task %}
+<table class="table text-center">
+    <thead>
+      <tr  class="table-dark">
+        <th class="col-lg-5">Task Name</th>
+        <th class="col-lg-3">Status</th>
+        <th class="col-lg-2">Edit</th>
+        <th class="col-lg-2">Delete</th>
+      </tr>
+    </thead>
+    
+    <tbody>
+    {% for tasks in all_task %}
+      {% if not tasks.done %}
+      <tr class="table-light">
+        <td>{{tasks.task}}</td>
+        <td><a href="{% url 'complete_uncomplete_task' tasks.id %}"><button type="button" class="btn btn-info">Mark as Completed</button></a></td>
+        <td><a href="{% url 'edit_task' tasks.id %}"><button type="button" class="btn btn-success">Edit</button></a></td>
+        <td><a href="{% url 'delete_task' tasks.id %}"><button type="button" class="btn btn-danger">Delete</button></a></td>
+        
+      </tr>
+      {% endif %}
+    {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+<br>
+<h4> Completed Tasks: </h4>
+{% comment %} display completed task here {% endcomment %}
+{% if completed_task %}
+<table class="table text-center">
+    <thead>
+      <tr  class="table-dark">
+        <th class="col-lg-5">Task Name</th>
+        <th class="col-lg-3">Status</th>
+        <th class="col-lg-2">Edit</th>
+        <th class="col-lg-2">Delete</th>
+      </tr>
+    </thead>
+    
+    <tbody>
+    {% for tasks in all_task %}
+      {% if tasks.done %}
+      <tr  class="table-light">
+        <td>{{tasks.task}}</td>
+        <td><a href="{% url 'complete_uncomplete_task' tasks.id %}"><button type="button" class="btn btn-info">Mark as Pending</button></a></td>
+        <td><a href="{% url 'edit_task' tasks.id %}"><button type="button" class="btn btn-success">Edit</button></a></td>
+        <td><a href="{% url 'delete_task' tasks.id %}"><button type="button" class="btn btn-danger">Delete</button></a></td>
+      </tr>
+        {% endif %}
+    {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+</div>
+{% endblock content %}
+
+</div>
