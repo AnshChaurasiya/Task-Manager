@@ -4,44 +4,221 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
     {% block title %}{% endblock title %}
-    <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #e3f2fd;" data-bs-theme="dark">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'images/logo.png'%}" alt="logo"></a>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'index' %}">Home</a>
-              </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'tasklist' %}">Manage Your Task</a>
-                </li>
-            </ul>
-
-            
-            
-            {% if user.is_authenticated  %}
-            <div class="text-white">{{ user.username }}</div>&nbsp;&nbsp;
-                <a href="{% url 'logout' %}"><button class="btn btn-outline-info" type="submit">Logout</button></a> 
-            {% elif current_page == 'login' %}
-
-                <a href="{% url 'register' %}"><button class="btn btn-outline-secondary" type="submit">Register</button></a>
-            {% else %}
-
-                <a href="{% url 'login' %}"><button class="btn btn-outline-secondary" type="submit">Login</button></a>
-            {% endif %}
-            
-            
-            
-          </div>
-        </div>
-      </nav>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+      body {
+        display: flex;
+        height: 100vh;
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        transition: background-color 0.3s, color 0.3s;
+        overflow: hidden; 
+      }
+
+      body.light-mode {
+        background: linear-gradient(to right, #6a11cb, #2575fc); 
+        color: #333;
+      }
+
+      body.dark-mode {
+        background: #121212;
+        color: #f0f0f0;
+      }
+      .sidebar {
+        display: flex;               
+        flex-direction: column;      
+        height: 100%;
+        width: 250px;
+        background-color: #24292f;
+        color: white;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding-top: 20px;
+        padding-left: 10px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        z-index: 10;
+      }
+      .sidebar.dark-mode {
+        background-color: #333;
+      }
+
+      .user-info {
+        margin-top: auto;           
+        padding: 20px;              
+        text-align: center;         
+      }
+      .sidebar a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        display: block;
+        border-radius: 5px;
+        margin: 5px 0;
+        transition: background-color 0.3s;
+      }
+
+      .sidebar a:hover {
+        background-color: #0366d6;
+      }
+      .main-content {
+        margin-left: 250px;
+        padding: 20px;
+        background-color: #f4f6f9;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+        transition: background-color 0.3s;
+        flex-grow: 1;
+        overflow-y: auto; 
+      }
+
+      .main-content.dark-mode {
+        background-color: #2c2f36;
+      }
+
+      .content-wrapper {
+        display: flex;
+        flex-wrap: wrap; 
+        gap: 20px;
+      }
+
+      .content-loc {
+        margin-top: 50px;
+      }
+
+      .task-card {
+        flex: 1 1 300px; 
+        max-width: 400px; 
+      }
+      .card {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .task-card img {
+        max-width: 100%;
+        border-radius: 5px;
+      }
+
+      #theme-toggle {
+        color: white;
+        background-color: transparent;
+        border: none;
+        font-size: 24px;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 100;
+        cursor: pointer;
+      }
+
+      #theme-toggle:hover {
+        color: #0366d6;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+        }
+        .main-content {
+          margin-left: 0;
+        }
+      }
+
+    </style>
   </head>
-  <body class="bg-light">
-    {% block content %}{% endblock content %}
+  <body class="light-mode">
+    <div class="sidebar" id="sidebar">
+      <div class="content-loc">
+      <a href="{% url 'index' %}">
+          Home
+        </a>
+      </div>
+      <a href="{% url 'tasklist' %}">Manage Your Task</a>
+
+      {% if user.is_authenticated %}
+        <div class="user-info">
+          <div>{{ user.username }}</div>
+          <a href="{% url 'logout' %}">
+            <button class="btn btn-outline-info">Logout</button>
+          </a>
+        </div>
+      {% elif current_page == 'login' %}
+        <a href="{% url 'register' %}">
+          <button class="btn btn-outline-secondary">Register</button>
+        </a>
+      {% else %}
+        <a href="{% url 'login' %}">
+          <button class="btn btn-outline-secondary">Login</button>
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="auth-buttons">
+      {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}" class="btn btn-outline-info">Logout</a>
+      {% elif current_page == 'login' %}
+        <a href="{% url 'register' %}" class="btn btn-outline-secondary">Register</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn btn-outline-secondary">Login</a>
+      {% endif %}
+    </div>
+
+    <button id="theme-toggle" class="btn">
+      <i class="fas fa-adjust" id="theme-icon"></i>
+    </button>
+
+    <div class="main-content" id="main-content">
+      <div class="content-wrapper">
+        {% block content %}{% endblock content %}
+      </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+      const savedTheme = localStorage.getItem('theme');
+      const body = document.body;
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('main-content');
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeIcon = document.getElementById('theme-icon');
+
+      if (savedTheme === 'dark-mode') {
+        body.classList.add('dark-mode');
+        sidebar.classList.add('dark-mode');
+        mainContent.classList.add('dark-mode');
+        themeIcon.classList.remove('fa-adjust');
+        themeIcon.classList.add('fa-sun');
+      }
+
+      themeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        sidebar.classList.toggle('dark-mode');
+        mainContent.classList.toggle('dark-mode');
+
+        const isDarkMode = body.classList.contains('dark-mode');
+        
+        if (isDarkMode) {
+          localStorage.setItem('theme', 'dark-mode');
+          themeIcon.classList.remove('fa-adjust');
+          themeIcon.classList.add('fa-sun');
+        } else {
+          localStorage.setItem('theme', 'light-mode');
+          themeIcon.classList.remove('fa-sun');
+          themeIcon.classList.add('fa-adjust');
+        }
+      });
+    </script>
   </body>
 </html>

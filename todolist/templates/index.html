@@ -2,48 +2,231 @@
 {% load static %}
 
 {% block title %}
-<title> {{title}} </title>
+<title>{{ title }}</title>
 {% endblock title %}
 
 {% block content %}
-
-    <div class="container fluid mt-15 ">
+    <div class="container-fluid">
         {% if messages %}
-            {% for message in messages  %}
+            {% for message in messages %}
                 <div class="alert alert-success" role="alert">
-                    {{ message }}      
+                    {{ message }}
                 </div>
             {% endfor %}
         {% endif %}
-
-
-        <div class="row mt-5">
-            <div class="col-lg-4">
-                <img src="{% static 'images/index-bg.png' alt="HomePage Image"%}" height="280" weidth="420">
-            </div>
-            <div class="col-lg-4">
-                <img src="{% static 'images/index-bg.png' alt="HomePage Image"%}" height="280" weidth="420">
-            </div>
-            <div class="col-lg-4">
-                <img src="{% static 'images/index-bg.png' alt="HomePage Image"%}" height="280" weidth="420">
-            </div>
-        </div>
-
-        <div class="row mt-5">
-            <div>
-                <center><h1> Quick and Easy to Use Anytime, Anywhere! </h1></center>
-                <center><h3> Plan Your Day Better, Get Your Life Organized </h3></center>
-                <center><strong>TaskManager</strong> helps you to set & track your goals at one place. </h4></center>
-                
+        <div class="row justify-content-center align-items-center text-center" style="margin-top: 80px;">
+            <div class="col-lg-8 col-md-10">
+                <h1 class="display-3 mb-4 hero-text">Quick and Easy to Use Anytime, Anywhere!</h1>
+                <h3 class="mb-4 hero-text">Plan Your Day Better, Get Your Life Organized</h3>
+                <p class="lead mb-5 hero-text">
+                    <strong>TaskManager</strong> helps you to set & track your goals in one place.
+                </p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'tasklist' %}">
+                        <button class="btn btn-primary btn-lg px-5 py-3 shadow-lg">Let's Get Started</button>
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}">
+                        <button class="btn btn-outline-light btn-lg px-5 py-3 shadow-lg">Login to Start</button>
+                    </a>
+                {% endif %}
             </div>
         </div>
-        <div class="row mt-2">
-            {% if user.is_authenticated %}
-                <center><a href="{% url 'tasklist' %}"><button type="button" class="btn btn-primary btn-lg">Let's Get Started</button></a></center>
-            {% else %}
-            <center><a href="{% url 'login' %}"><button type="button" class="btn btn-primary btn-lg">Login to Start</button></a></center>
-            {% endif %}
+        <div class="row justify-content-center text-center mt-5">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-check-circle fa-4x mb-3"></i>
+                    <h5 class="feature-card-title">Track Your Goals</h5>
+                    <p class="feature-card-description">Stay organized by keeping track of all your goals in one place.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-cogs fa-4x mb-3"></i>
+                    <h5 class="feature-card-title">Easy to Use</h5>
+                    <p class="feature-card-description">Our interface is clean and simple, making task management easy.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-sync fa-4x mb-3"></i>
+                    <h5 class="feature-card-title">Real-Time Sync</h5>
+                    <p class="feature-card-description">Access your tasks anytime, anywhere with real-time synchronization.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt fa-4x mb-3"></i>
+                    <h5 class="feature-card-title">Mobile Friendly</h5>
+                    <p class="feature-card-description">Fully responsive design that works on your phone, tablet, or desktop.</p>
+                </div>
+            </div>
         </div>
-        
     </div>
+    <style>
+        body {
+            background: linear-gradient(45deg, #ff6a00, #ffcc00);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+            transition: background-color 0.3s ease;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #e4e4e4;
+        }
+
+        .container-fluid {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .display-3 {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .text-white {
+            color: white !important;
+        }
+        .hero-text {
+            transition: color 0.3s ease;
+            color: #d8d7d7; 
+        }
+
+        body.dark-mode .hero-text {
+            color: #686767; 
+        }
+        .btn-primary {
+            background-color: #0366d6;
+            border-color: #0366d6;
+            transition: all 0.3s ease;
+            padding: 15px 30px;
+        }
+
+        .btn-primary:hover {
+            background-color: #024d8b;
+            border-color: #024d8b;
+            transform: scale(1.05);
+        }
+
+        .btn-outline-light {
+            background-color: transparent;
+            border: 2px solid white;
+            color: rgb(177, 174, 174);
+            transition: all 0.3s ease;
+            padding: 15px 30px;
+        }
+
+        .btn-outline-light:hover {
+            background-color: white;
+            color: #0366d6;
+            transform: scale(1.05);
+        }
+        .feature-card {
+            background-color: #8f9cac; 
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-card i {
+            color: #ffcc00;
+        }
+
+        .feature-card-title {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .feature-card-description {
+            color: #bbb;
+            font-size: 1rem;
+        }
+        body.dark-mode .feature-card {
+            background-color: #333; 
+        }
+
+        body.dark-mode .feature-card-title {
+            color: #e4e4e4;
+        }
+
+        body.dark-mode .feature-card-description {
+            color: #bbb;
+        }
+        body.dark-mode .btn-outline-light:hover {
+            background-color: #444;
+            color: #ffcc00;
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        const body = document.body;
+        const themeIcon = document.getElementById('theme-icon');
+        const featureCards = document.querySelectorAll('.feature-card'); 
+        const heroText = document.querySelectorAll('.hero-text'); 
+
+        if (savedTheme) {
+            body.classList.add(savedTheme);
+            themeIcon.classList.toggle('bi-sun', savedTheme === 'dark-mode');
+            themeIcon.classList.toggle('bi-moon-stars', savedTheme !== 'dark-mode');
+            
+            featureCards.forEach(card => {
+                if (savedTheme === 'dark-mode') {
+                    card.classList.add('dark-mode');
+                } else {
+                    card.classList.remove('dark-mode');
+                }
+            });
+
+            heroText.forEach(text => {
+                if (savedTheme === 'dark-mode') {
+                    text.classList.add('dark-mode');
+                } else {
+                    text.classList.remove('dark-mode');
+                }
+            });
+        }
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            body.classList.toggle('dark-mode');
+            const isDarkMode = body.classList.contains('dark-mode');
+            
+            if (isDarkMode) {
+                localStorage.setItem('theme', 'dark-mode');
+                themeIcon.classList.toggle('bi-sun', true);
+                themeIcon.classList.toggle('bi-moon-stars', false);
+            } else {
+                localStorage.setItem('theme', 'light-mode');
+                themeIcon.classList.toggle('bi-moon-stars', true);
+                themeIcon.classList.toggle('bi-sun', false);
+            }
+            
+            featureCards.forEach(card => {
+                if (isDarkMode) {
+                    card.classList.add('dark-mode');
+                } else {
+                    card.classList.remove('dark-mode');
+                }
+            });
+
+            heroText.forEach(text => {
+                if (isDarkMode) {
+                    text.classList.add('dark-mode');
+                } else {
+                    text.classList.remove('dark-mode');
+                }
+            });
+        });
+    </script>
+
 {% endblock content %}
